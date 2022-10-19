@@ -15,7 +15,6 @@ module.exports = async (req, res, next) => {
       token,
       process.env.TOKEN_SECRET
     );
-
     req.user = decoder;
 
     next();

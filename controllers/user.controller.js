@@ -1,4 +1,8 @@
-const { signupService, findUserByEmail } = require("../services/user.services");
+const {
+  signupService,
+  findUserByEmail,
+  findUserByToken,
+} = require("../services/user.services");
 const { sendMailWithGmail } = require("../utils/email");
 const { generateToken } = require("../utils/token");
 
@@ -79,6 +83,44 @@ exports.login = async (req, res) => {
         user: others,
         token,
       },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      status: "fail",
+      error,
+    });
+  }
+};
+
+exports.confirmEmail = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const user = await findUserByToken(token);
+
+    if (!user) {
+      return res.status(403).json({
+        status: "fail",
+        error: "Invalid token",
+      });
+    }
+
+    const expired = new Date() > new Date(user.confirmationTokenExpires);
+    if (expired) {
+      return res.status(401).json({
+        status: "fail",
+        error: "Token expired",
+      });
+    }
+
+    user.status = "active";
+    user.confirmationToken = undefined;
+    user.confirmationTokenExpires = undefined;
+    user.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+      status: "success",
+      message: "Successfully activated your account.",
     });
   } catch (error) {
     console.log(error);

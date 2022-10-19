@@ -67,7 +67,7 @@ const userSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      default: "active",
+      default: "inactive",
       enum: ["active", "inactive", "blocked"],
     },
     imageURL: {
@@ -87,6 +87,7 @@ const userSchema = mongoose.Schema(
 
 userSchema.pre("save", function (next) {
   const password = this.password;
+  // var salt = bcrypt.genSaltSync(10);
   const hashPassword = bcrypt.hashSync(password);
   this.password = hashPassword;
   this.confirmPassword = undefined;
@@ -94,8 +95,7 @@ userSchema.pre("save", function (next) {
 });
 
 userSchema.methods.comparePassword = function (password, hash) {
-  console.log(password, hash);
-  const isPasswordValid = bcrypt.compare(hash, password);
+  const isPasswordValid = bcrypt.compare(password, hash);
   console.log(isPasswordValid);
   return isPasswordValid;
 };
