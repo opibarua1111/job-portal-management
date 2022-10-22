@@ -45,3 +45,27 @@ exports.getManagerJobs = async (req, res, next) => {
     });
   }
 };
+
+exports.updateJob = async (req, res, next) => {
+  try {
+    const user = await findUserByEmail(req.user?.email);
+    if (user.role !== "hiring-manager") {
+      return res.status(400).json({
+        status: "fail",
+        message: "you are not permited",
+      });
+    }
+    const result = await updateManagerJobServices(user._id);
+
+    res.status(200).json({
+      status: "success",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: "couldn't find jobs",
+      error: error.message,
+    });
+  }
+};

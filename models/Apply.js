@@ -1,44 +1,38 @@
 const { mongoose } = require("mongoose");
 const { ObjectId } = mongoose.Schema.Types;
+const validator = require("validator");
 
 //schema design
-const jobSchema = mongoose.Schema(
+const applySchema = mongoose.Schema(
   {
-    creator: {
-      type: ObjectId,
-      ref: "hiring-manager",
-      required: true,
-    },
-    title: {
+    firstName: {
       type: String,
-      required: [true, "Please provide a job title."],
+      required: [true, "Please provide a first name"],
       trim: true,
+      minLength: [3, "Name must be at least 3 characters."],
+      maxLength: [100, "Name is too large"],
+    },
+    lastName: {
+      type: String,
+      required: [true, "Please provide a last name"],
+      trim: true,
+      minLength: [3, "Name must be at least 3 characters."],
+      maxLength: [100, "Name is too large"],
+    },
+    email: {
+      type: String,
       lowercase: true,
-      minLength: [10, "title must be at least 10 characters."],
-      maxLength: [150, "Name is too large"],
+      validate: [validator.isEmail, "Please provide a valid email"],
+      trim: true,
+      unique: true,
+      required: [true, "Email address is required"],
+    },
+    jobId: {
+      type: ObjectId,
+      required: true,
     },
     description: {
       type: String,
-      required: true,
-    },
-    salary: {
-      type: Number,
-    },
-    location: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
-      required: true,
-    },
-    status: {
-      type: String,
-      default: "inactive",
-      enum: ["active", "inactive", "blocked"],
-    },
-    deadline: {
-      type: Date,
       required: true,
     },
   },
@@ -47,6 +41,6 @@ const jobSchema = mongoose.Schema(
   }
 );
 
-const Job = mongoose.model("Job", jobSchema);
+const Apply = mongoose.model("Apply", applySchema);
 
-module.exports = Job;
+module.exports = Apply;

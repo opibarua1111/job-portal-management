@@ -10,5 +10,5 @@ router
 // router
 //   .route("/manager/jobs/:id")
 //   .get(verifyToken, hiringManagerController.getManagerJobs);
-
+router.route("/jobs/:id").patch(verifyToken, hiringManagerController.updateJob);
 module.exports = router;
