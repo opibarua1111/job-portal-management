@@ -7,8 +7,8 @@ router.route("/jobs").post(verifyToken, hiringManagerController.createJob);
 router
   .route("/manager/jobs")
   .get(verifyToken, hiringManagerController.getManagerJobs);
-// router
-//   .route("/manager/jobs/:id")
-//   .get(verifyToken, hiringManagerController.getManagerJobs);
+router
+  .route("/manager/jobs/:id")
+  .get(verifyToken, hiringManagerController.getManagerJobAppliedInfo);
 router.route("/jobs/:id").patch(verifyToken, hiringManagerController.updateJob);
 module.exports = router;
